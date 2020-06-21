@@ -84,12 +84,12 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
             TitleBarWidget.getInstance().initTitlebarWidget();
             /*初始化标题栏事件*/
             TitleBarWidget.getInstance().initTitleEvent(this, inflater);
+            /*初始化接收到的数据*/
+            this.initReceiveData();
             /*初始化标题栏配置*/
             TitleBarWidget.getInstance().initTitlebarConfig(this, getActivity());
             /*绑定控件*/
             this.bindButterKnife(this);
-            /*初始化接收到的数据*/
-            this.initReceiveData();
             /*界面对用户可见时，初始化界面和数据*/
             if (getUserVisibleHint()) {
                 /*初始化界面*/
@@ -427,7 +427,7 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
 
     @Override
     public boolean visibilityMore() {
-        return false;
+        return true;
     }
 
     @Override

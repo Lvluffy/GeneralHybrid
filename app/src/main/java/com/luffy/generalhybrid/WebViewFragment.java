@@ -10,4 +10,8 @@ import com.luffy.hybrid.ui.HybridFragment;
  */
 public class WebViewFragment extends HybridFragment {
 
+    @Override
+    public boolean visibilityMoreImg() {
+        return true;
+    }
 }
