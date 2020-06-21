@@ -1,11 +1,10 @@
-package com.luffy.hybrid.extend.urlLoading.child;
+package com.luffy.hybrid.urlIntercept;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import com.luffy.hybrid.extend.urlLoading.base.BaseUrlLoadingIntercept;
 
 /**
  * Created by lvlufei on 2019/6/20
@@ -13,10 +12,10 @@ import com.luffy.hybrid.extend.urlLoading.base.BaseUrlLoadingIntercept;
  * @name url加载拦截-文件
  * @desc
  */
-public class FileUrlLoadingIntercept extends BaseUrlLoadingIntercept {
+public class FileUrlIntercept implements HybridUrlIntercept {
 
     @Override
-    public boolean urlLoadingIntercept(Activity mContext, String url) {
+    public boolean urlIntercept(Activity mContext, String url) {
         if (!TextUtils.isEmpty(url) && (url.endsWith(".docx")
                 || url.endsWith(".doc")
                 || url.endsWith(".xls")

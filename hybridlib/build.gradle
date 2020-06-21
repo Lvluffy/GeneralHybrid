@@ -45,4 +45,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     /**support*/
     compileOnly rootProject.supportDepends.values()
+    /*通用视图*/
+    implementation rootProject.generalView.values()
+    /*通用生命周期*/
+    implementation rootProject.generalLifecycle.values()
 }

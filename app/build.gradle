@@ -44,5 +44,8 @@ dependencies {
     implementation rootProject.supportDepends.values()
     /**project*/
     implementation project(path: ':hybridlib')
+    /*butterknife*/
+    implementation 'com.jakewharton:butterknife:9.0.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0'
 }
 

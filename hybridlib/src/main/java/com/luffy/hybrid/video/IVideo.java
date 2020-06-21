@@ -1,4 +1,4 @@
-package com.luffy.hybrid.extend.video;
+package com.luffy.hybrid.video;
 
 import android.view.View;
 import android.webkit.WebChromeClient;

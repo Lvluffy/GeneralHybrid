@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!--    <color name="colorPrimary">@color/color_50BDF5</color>-->
+<!--    <color name="colorPrimaryPressed">@color/color_50BDF5</color>-->
+
+    <color name="white">#FFFFFF</color>
+
+    <!--commonColor（常见颜色值）-->
+    <color name="color_999999">#999999</color>
+    <color name="color_50BDF5">#50BDF5</color>
+</resources>

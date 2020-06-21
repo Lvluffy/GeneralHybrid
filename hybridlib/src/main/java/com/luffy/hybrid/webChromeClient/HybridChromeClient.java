@@ -1,11 +1,12 @@
-package com.luffy.hybrid.core.webChromeClient;
+package com.luffy.hybrid.webChromeClient;
 
 import android.app.Activity;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
-import com.luffy.hybrid.extend.video.VideoImpl;
+import com.luffy.hybrid.video.VideoImpl;
+
 
 /**
  * Created by lvlufei on 2019/6/20
@@ -13,21 +14,21 @@ import com.luffy.hybrid.extend.video.VideoImpl;
  * @name 公用的web浏览器客户端
  * @desc
  */
-public class BaseLayerWebChromeClient extends WebChromeClient {
+public class HybridChromeClient extends WebChromeClient {
 
-    private IBaseLayerWebChromeClient mIBaseLayerWebChromeClient;
+    private IHybridChromeClient mIHybridChromeClient;
     private VideoImpl mVideoImpl;
 
-    public BaseLayerWebChromeClient(Activity mContext, WebView mWebView, IBaseLayerWebChromeClient mIBaseLayerWebChromeClient) {
-        this.mIBaseLayerWebChromeClient = mIBaseLayerWebChromeClient;
+    public HybridChromeClient(Activity mContext, WebView mWebView, IHybridChromeClient mIHybridChromeClient) {
+        this.mIHybridChromeClient = mIHybridChromeClient;
         mVideoImpl = new VideoImpl(mContext, mWebView);
     }
 
     @Override
     public void onProgressChanged(WebView view, int newProgress) {
         super.onProgressChanged(view, newProgress);
-        if (mIBaseLayerWebChromeClient != null) {
-            mIBaseLayerWebChromeClient.onProgressChangedBase(view, newProgress);
+        if (mIHybridChromeClient != null) {
+            mIHybridChromeClient.onProgressChangedBase(view, newProgress);
         }
     }
 
@@ -40,8 +41,8 @@ public class BaseLayerWebChromeClient extends WebChromeClient {
     @Override
     public void onReceivedTitle(WebView view, String title) {
         super.onReceivedTitle(view, title);
-        if (mIBaseLayerWebChromeClient != null) {
-            mIBaseLayerWebChromeClient.onReceivedTitleBase(view, title);
+        if (mIHybridChromeClient != null) {
+            mIHybridChromeClient.onReceivedTitleBase(view, title);
         }
     }
 

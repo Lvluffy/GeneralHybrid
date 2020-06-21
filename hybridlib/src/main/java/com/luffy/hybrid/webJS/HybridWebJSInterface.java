@@ -1,4 +1,4 @@
-package com.luffy.hybrid.core.webJS;
+package com.luffy.hybrid.webJS;
 
 import android.content.Context;
 import android.webkit.JavascriptInterface;
@@ -8,11 +8,11 @@ import android.webkit.JavascriptInterface;
  *
  * @desc 公用的Webview-JS交互接口
  */
-public abstract class BaseLayerWebJSInterface {
+public abstract class HybridWebJSInterface {
 
     public Context mContext;
 
-    public BaseLayerWebJSInterface(Context context) {
+    public HybridWebJSInterface(Context context) {
         mContext = context;
     }
 

@@ -1,4 +1,4 @@
-package com.luffy.hybrid.extend.video;
+package com.luffy.hybrid.video;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
@@ -17,9 +17,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Created by lvlufei on 2019/3/27
+ * Created by zxing on 2019/3/27
  *
- * @name H5视屏全屏 具体实现
+ * @desc H5视屏全屏 具体实现
  */
 public class VideoImpl implements IVideo {
 

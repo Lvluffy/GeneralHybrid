@@ -1,4 +1,4 @@
-package com.luffy.hybrid.core.webViewClient;
+package com.luffy.hybrid.webViewClient;
 
 import android.graphics.Bitmap;
 import android.net.http.SslError;
@@ -12,7 +12,7 @@ import android.webkit.WebView;
  *
  * @desc 公用的Web客户端接口
  */
-public interface IBaseLayerWebViewClient {
+public interface IHybridViewClient {
     /**
      * 重定向
      *

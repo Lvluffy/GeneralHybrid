@@ -1,4 +1,4 @@
-package com.luffy.hybrid.core.webChromeClient;
+package com.luffy.hybrid.webChromeClient;
 
 import android.webkit.WebView;
 
@@ -7,7 +7,7 @@ import android.webkit.WebView;
  *
  * @desc 公用的Web浏览器客户端接口
  */
-public interface IBaseLayerWebChromeClient {
+public interface IHybridChromeClient {
 
     /**
      * 进度监听

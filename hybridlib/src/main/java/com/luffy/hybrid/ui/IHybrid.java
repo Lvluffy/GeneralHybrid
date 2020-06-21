@@ -1,11 +1,11 @@
-package com.luffy.hybrid.core.ui;
+package com.luffy.hybrid.ui;
 
 /**
  * Created by lvlufei on 2018/5/24
  *
  * @desc 公用的Webview-公共流程接口
  */
-public interface IBaseLayerWeb {
+public interface IHybrid {
     /**
      * 初始化控件
      */
