@@ -12,19 +12,23 @@ import android.view.KeyEvent;
  *
  * @desc 公用的Webview模板
  */
-public class HybridActivity extends AppCompatActivity {
+public class HybridActivity extends AppCompatActivity implements IHybridCreate {
 
-    private HybridFragment mHybridFragment;
+    protected HybridFragment mHybridFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mHybridFragment = new HybridFragment();
+        mHybridFragment = doCreate();
         mHybridFragment.setArguments(getIntent().getExtras());
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(android.R.id.content, mHybridFragment).commitAllowingStateLoss();
+    }
 
+    @Override
+    public HybridFragment doCreate() {
+        return new HybridFragment();
     }
 
     @Override
@@ -37,5 +41,4 @@ public class HybridActivity extends AppCompatActivity {
         }
         return super.onKeyDown(keyCode, event);
     }
-
 }
