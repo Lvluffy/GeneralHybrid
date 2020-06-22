@@ -1,7 +1,6 @@
 package com.luffy.generalhybrid;
 
 import com.luffy.hybrid.ui.HybridActivity;
-import com.luffy.hybrid.ui.HybridFragment;
 
 /**
  * Created by lvlufei on 2018/1/11
@@ -10,8 +9,4 @@ import com.luffy.hybrid.ui.HybridFragment;
  */
 public class WebViewActivity extends HybridActivity {
 
-    @Override
-    public HybridFragment doCreate() {
-        return new WebViewFragment();
-    }
 }
