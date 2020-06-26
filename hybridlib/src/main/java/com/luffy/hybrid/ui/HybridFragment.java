@@ -90,12 +90,12 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
             /*绑定布局*/
             rootView = inflater.inflate(R.layout.root_layout, null);
             TitleBarWidget.getInstance().setRootView(rootView);
-            /*绑定控件*/
-            this.bindButterKnife(this);
             /*初始化标题栏控件*/
             TitleBarWidget.getInstance().initTitlebarWidget();
             /*初始化标题栏事件*/
             TitleBarWidget.getInstance().initTitleEvent(this, inflater);
+            /*绑定控件*/
+            this.bindButterKnife(this);
             /*初始化接收到的数据*/
             this.initReceiveData();
             /*初始化标题栏配置*/
