@@ -5,7 +5,7 @@ package com.luffy.hybrid.ui;
  *
  * @desc 公用的Webview-公共流程接口
  */
-public interface IHybrid {
+public interface IHybridFlow {
     /**
      * 初始化控件
      */
@@ -22,11 +22,6 @@ public interface IHybrid {
     void configView();
 
     /**
-     * 处理异常界面
-     */
-    void handlerErrorView();
-
-    /**
      * 处理Url
      */
     void handlerUrl();
@@ -35,6 +30,11 @@ public interface IHybrid {
      * 处理分享Url
      */
     void handlerShareUrl();
+
+    /**
+     * 添加拦截器
+     */
+    void addInterceptor();
 
     /**
      * 加载Url

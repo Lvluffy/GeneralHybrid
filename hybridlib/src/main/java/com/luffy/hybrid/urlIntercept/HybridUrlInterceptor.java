@@ -8,7 +8,7 @@ import android.app.Activity;
  * @name url加载拦截
  * @desc
  */
-public interface HybridUrlIntercept {
+public interface HybridUrlInterceptor {
     /**
      * url加载拦截
      *

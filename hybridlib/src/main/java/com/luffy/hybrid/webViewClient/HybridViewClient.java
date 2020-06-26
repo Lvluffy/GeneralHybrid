@@ -24,16 +24,16 @@ public class HybridViewClient extends WebViewClient {
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        if (mIHybridViewClient != null) {
-            return mIHybridViewClient.shouldOverrideUrlLoadingBase(view, url);
+        if (mIHybridViewClient != null && mIHybridViewClient.shouldOverrideUrlLoadingBase(view, url)) {
+            return true;
         }
         return super.shouldOverrideUrlLoading(view, url);
     }
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-        if (mIHybridViewClient != null) {
-            return mIHybridViewClient.shouldOverrideUrlLoadingBase(view, request);
+        if (mIHybridViewClient != null && mIHybridViewClient.shouldOverrideUrlLoadingBase(view, request)) {
+            return true;
         }
         return super.shouldOverrideUrlLoading(view, request);
     }

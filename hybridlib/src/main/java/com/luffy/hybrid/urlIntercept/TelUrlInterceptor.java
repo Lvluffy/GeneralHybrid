@@ -11,7 +11,7 @@ import android.text.TextUtils;
  * @name url加载拦截-打电话
  * @desc
  */
-public class TelUrlIntercept implements HybridUrlIntercept {
+public class TelUrlInterceptor implements HybridUrlInterceptor {
 
     @Override
     public boolean urlIntercept(Activity mContext, String url) {

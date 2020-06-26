@@ -2,6 +2,7 @@ package com.luffy.hybrid.webViewClient;
 
 import android.graphics.Bitmap;
 import android.net.http.SslError;
+import android.view.View;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -65,4 +66,19 @@ public interface IHybridViewClient {
      * @param error
      */
     void onReceivedErrorBase(WebView view, WebResourceRequest request, WebResourceError error);
+
+    /**
+     * 是否显示异常
+     *
+     * @return
+     */
+    boolean isShowError();
+
+    /**
+     * 处理异常视图
+     *
+     * @param error
+     * @return
+     */
+    View handlerErrorView(WebResourceError error);
 }

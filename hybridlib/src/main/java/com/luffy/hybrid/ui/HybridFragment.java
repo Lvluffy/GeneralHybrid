@@ -23,10 +23,11 @@ import android.webkit.WebView;
 import android.widget.LinearLayout;
 
 import com.luffy.hybrid.R;
-import com.luffy.hybrid.urlIntercept.AlipayUrlIntercept;
-import com.luffy.hybrid.urlIntercept.FileUrlIntercept;
-import com.luffy.hybrid.urlIntercept.ShortLinkUrlIntercept;
-import com.luffy.hybrid.urlIntercept.TelUrlIntercept;
+import com.luffy.hybrid.urlIntercept.AlipayUrlInterceptor;
+import com.luffy.hybrid.urlIntercept.FileUrlInterceptor;
+import com.luffy.hybrid.urlIntercept.HybridUrlInterceptor;
+import com.luffy.hybrid.urlIntercept.ShortLinkUrlInterceptor;
+import com.luffy.hybrid.urlIntercept.TelUrlInterceptor;
 import com.luffy.hybrid.webChromeClient.HybridChromeClient;
 import com.luffy.hybrid.webChromeClient.IHybridChromeClient;
 import com.luffy.hybrid.webViewClient.HybridViewClient;
@@ -37,6 +38,9 @@ import com.luffy.lifycycle.titlebarlib.impl.ITitleLayout;
 import com.luffy.lifycycle.titlebarlib.impl.IUIInit;
 import com.luffy.view.generalemptylib.GeneralEmpty;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by lvlufei on 2018/5/21
  *
@@ -45,7 +49,7 @@ import com.luffy.view.generalemptylib.GeneralEmpty;
 public class HybridFragment extends Fragment implements IUIInit<Fragment>,
         ITitleClick,
         ITitleLayout,
-        IHybrid,
+        IHybridFlow,
         IHybridViewClient,
         IHybridChromeClient {
 
@@ -54,17 +58,23 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
 
     //上下文对象
     public Activity mContext;
+
     //界面是否已经附属，默认：false
     protected boolean isAttach;
     //视图是否已经初始化，默认：false
     protected boolean isInit;
 
+    //WebView
     protected View rootView;
     protected WebView webview;
     protected String requestUrl;
-    protected boolean isError;
+
+    //异常处理
     protected LinearLayout webParentView;
-    protected View errorView;
+    protected boolean isError;
+
+    //拦截器
+    protected List<HybridUrlInterceptor> mUrlInterceptorList = new ArrayList<>();
 
     @Override
     public void onAttach(Context context) {
@@ -80,6 +90,8 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
             /*绑定布局*/
             rootView = inflater.inflate(R.layout.root_layout, null);
             TitleBarWidget.getInstance().setRootView(rootView);
+            /*绑定控件*/
+            this.bindButterKnife(this);
             /*初始化标题栏控件*/
             TitleBarWidget.getInstance().initTitlebarWidget();
             /*初始化标题栏事件*/
@@ -88,8 +100,6 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
             this.initReceiveData();
             /*初始化标题栏配置*/
             TitleBarWidget.getInstance().initTitlebarConfig(this, getActivity());
-            /*绑定控件*/
-            this.bindButterKnife(this);
             /*界面对用户可见时，初始化界面和数据*/
             if (getUserVisibleHint()) {
                 /*初始化界面*/
@@ -152,9 +162,9 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
         findView();
         init();
         configView();
-        handlerErrorView();
         handlerUrl();
         handlerShareUrl();
+        addInterceptor();
         loadUrl();
     }
 
@@ -207,25 +217,6 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
     }
 
     @Override
-    public void handlerErrorView() {
-        errorView = new GeneralEmpty(mContext)
-                .setEmptyLayoutGravity(Gravity.CENTER)
-                .setEmptyImg(R.drawable.general_empty)
-                .setEmptyTxtColor(R.color.color_999999)
-                .setEmptyTxtSize(14)
-                .setEmptyTxtStyle(Typeface.BOLD)
-                .setEmptyBtnBackground(R.drawable.default_hybrid_btn_selector)
-                .setEmptyBtnColor(R.color.white)
-                .setEmptyBtn("刷新重试", new GeneralEmpty.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        isError = false;
-                        webview.reload();
-                    }
-                });
-    }
-
-    @Override
     public void handlerUrl() {
 
     }
@@ -233,6 +224,18 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
     @Override
     public void handlerShareUrl() {
 
+    }
+
+    @Override
+    public void addInterceptor() {
+        /*处理打开支付宝*/
+        mUrlInterceptorList.add(new AlipayUrlInterceptor());
+        /*处理文件*/
+        mUrlInterceptorList.add(new FileUrlInterceptor());
+        /*处理打电话*/
+        mUrlInterceptorList.add(new TelUrlInterceptor());
+        /*处理短链接*/
+        mUrlInterceptorList.add(new ShortLinkUrlInterceptor());
     }
 
     @Override
@@ -274,69 +277,30 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
 
     @Override
     public boolean shouldOverrideUrlLoadingBase(WebView view, String url) {
-        /*处理打开支付宝*/
-        if (new AlipayUrlIntercept().urlIntercept(mContext, url)) {
-            return true;
+        for (HybridUrlInterceptor interceptor : mUrlInterceptorList) {
+            if (interceptor.urlIntercept(mContext, url)) {
+                return true;
+            }
         }
-        /*处理文件*/
-        if (new FileUrlIntercept().urlIntercept(mContext, url)) {
-            return true;
-        }
-        /*处理打电话*/
-        if (new TelUrlIntercept().urlIntercept(mContext, url)) {
-            return true;
-        }
-        /*处理短链接*/
-        if (new ShortLinkUrlIntercept().urlIntercept(mContext, url)) {
-            return true;
-        }
-        /*普通加载*/
-        view.loadUrl(url);
-        return true;
+        return false;
     }
 
     @Override
     public boolean shouldOverrideUrlLoadingBase(WebView view, WebResourceRequest request) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            /*处理打开支付宝*/
-            if (new AlipayUrlIntercept().urlIntercept(mContext, request.getUrl().toString())) {
-                return true;
+            for (HybridUrlInterceptor interceptor : mUrlInterceptorList) {
+                if (interceptor.urlIntercept(mContext, request.getUrl().toString())) {
+                    return true;
+                }
             }
-            /*处理文件*/
-            if (new FileUrlIntercept().urlIntercept(mContext, request.getUrl().toString())) {
-                return true;
-            }
-            /*处理打电话*/
-            if (new TelUrlIntercept().urlIntercept(mContext, request.getUrl().toString())) {
-                return true;
-            }
-            /*处理短链接*/
-            if (new ShortLinkUrlIntercept().urlIntercept(mContext, request.getUrl().toString())) {
-                return true;
-            }
-            /*普通加载*/
-            view.loadUrl(request.getUrl().toString());
         } else {
-            /*处理打开支付宝*/
-            if (new AlipayUrlIntercept().urlIntercept(mContext, request.toString())) {
-                return true;
+            for (HybridUrlInterceptor interceptor : mUrlInterceptorList) {
+                if (interceptor.urlIntercept(mContext, request.toString())) {
+                    return true;
+                }
             }
-            /*处理文件*/
-            if (new FileUrlIntercept().urlIntercept(mContext, request.toString())) {
-                return true;
-            }
-            /*处理打电话*/
-            if (new TelUrlIntercept().urlIntercept(mContext, request.toString())) {
-                return true;
-            }
-            /*处理短链接*/
-            if (new ShortLinkUrlIntercept().urlIntercept(mContext, request.toString())) {
-                return true;
-            }
-            /*普通加载*/
-            view.loadUrl(request.toString());
         }
-        return true;
+        return false;
     }
 
     @Override
@@ -361,10 +325,38 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
     @Override
     public void onReceivedErrorBase(WebView view, WebResourceRequest request, WebResourceError error) {
         isError = true;
-        webParentView.removeAllViews();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            webParentView.addView(((GeneralEmpty) errorView).setEmptyTxt(error.getDescription().toString()), view.getWidth(), view.getHeight());
+        if (isShowError() && handlerErrorView(error) != null) {
+            webParentView.removeAllViews();
+            webParentView.addView(handlerErrorView(error), view.getWidth(), view.getHeight());
         }
+    }
+
+    @Override
+    public boolean isShowError() {
+        return true;
+    }
+
+    @Override
+    public View handlerErrorView(WebResourceError error) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return new GeneralEmpty(mContext)
+                    .setEmptyLayoutGravity(Gravity.CENTER)
+                    .setEmptyImg(R.drawable.general_empty)
+                    .setEmptyTxt(error.getDescription().toString())
+                    .setEmptyTxtColor(R.color.color_999999)
+                    .setEmptyTxtSize(14)
+                    .setEmptyTxtStyle(Typeface.BOLD)
+                    .setEmptyBtnBackground(R.drawable.default_hybrid_btn_selector)
+                    .setEmptyBtnColor(R.color.white)
+                    .setEmptyBtn("刷新重试", new GeneralEmpty.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            isError = false;
+                            webview.reload();
+                        }
+                    });
+        }
+        return null;
     }
 
     @Override
@@ -428,6 +420,11 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
     @Override
     public boolean visibilityMore() {
         return true;
+    }
+
+    @Override
+    public boolean visibilityMoreView() {
+        return false;
     }
 
     @Override
@@ -513,6 +510,11 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
     @Override
     public int setTitleSize() {
         return 0;
+    }
+
+    @Override
+    public View setMoreView() {
+        return null;
     }
 
     @Override
