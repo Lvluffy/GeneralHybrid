@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.luffy.hybrid.R;
 import com.luffy.hybrid.urlIntercept.AlipayUrlInterceptor;
@@ -68,6 +70,9 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
     protected View rootView;
     protected WebView webview;
     protected String requestUrl;
+
+    //进度条
+    private ProgressBar progressBar;
 
     //异常处理
     protected LinearLayout webParentView;
@@ -172,6 +177,7 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
     public void findView() {
         webview = rootView.findViewById(R.id.webview);
         webParentView = (LinearLayout) webview.getParent();
+        progressBar = rootView.findViewById(R.id.progress_bar);
     }
 
     @Override
@@ -263,8 +269,13 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
 
     @Override
     public void onProgressChangedBase(WebView view, int newProgress) {
+        Log.v("Hybrid", "newProgress = " + newProgress);
         if (newProgress == 100) {
             monitorUrlLoading();
+            progressBar.setVisibility(View.GONE);
+        } else {
+            progressBar.setVisibility(View.VISIBLE);
+            progressBar.setProgress(newProgress);
         }
     }
 
