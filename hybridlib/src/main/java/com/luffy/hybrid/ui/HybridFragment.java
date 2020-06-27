@@ -93,7 +93,7 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
         if (rootView == null) {
             mContext = getActivity();
             /*绑定布局*/
-            rootView = inflater.inflate(R.layout.root_layout, null);
+            rootView = inflater.inflate(setRootLayoutView(), null);
             TitleBarWidget.getInstance().setRootView(rootView);
             /*初始化标题栏控件*/
             TitleBarWidget.getInstance().initTitlebarWidget();
@@ -171,6 +171,11 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
         handlerShareUrl();
         addInterceptor();
         loadUrl();
+    }
+
+    @Override
+    public int setRootLayoutView() {
+        return R.layout.root_layout;
     }
 
     @Override

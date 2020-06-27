@@ -7,6 +7,13 @@ package com.luffy.hybrid.ui;
  */
 public interface IHybridFlow {
     /**
+     * 设置布局
+     *
+     * @return
+     */
+    int setRootLayoutView();
+
+    /**
      * 初始化控件
      */
     void findView();
