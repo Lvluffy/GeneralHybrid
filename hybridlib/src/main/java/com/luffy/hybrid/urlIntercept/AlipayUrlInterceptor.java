@@ -16,7 +16,10 @@ public class AlipayUrlInterceptor implements HybridUrlInterceptor {
 
     @Override
     public boolean urlIntercept(Activity mContext, String url) {
-        if (!TextUtils.isEmpty(url) && (url.startsWith("alipays:") || url.startsWith("alipay"))) {
+        if (TextUtils.isEmpty(url)) {
+            return false;
+        }
+        if (url.startsWith("alipays:") || url.startsWith("alipay")) {
             try {
                 mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
             } catch (Exception e) {

@@ -15,8 +15,14 @@ public class TelUrlInterceptor implements HybridUrlInterceptor {
 
     @Override
     public boolean urlIntercept(Activity mContext, String url) {
-        if (!TextUtils.isEmpty(url) && url.startsWith("tel:")) {
-            mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+        if (TextUtils.isEmpty(url)) {
+            return false;
+        }
+        if (url.startsWith("tel:")) {
+            try {
+                mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+            } catch (Exception ignored) {
+            }
             return true;
         }
         return false;

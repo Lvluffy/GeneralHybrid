@@ -15,7 +15,10 @@ public class ShortLinkUrlInterceptor implements HybridUrlInterceptor {
 
     @Override
     public boolean urlIntercept(Activity mContext, String url) {
-        if (!TextUtils.isEmpty(url) && (!url.startsWith("http://") || !url.startsWith("https://"))) {
+        if (TextUtils.isEmpty(url)) {
+            return false;
+        }
+        if (!(url.startsWith("http://") || url.startsWith("https://"))) {
             try {
                 mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
             } catch (Exception ignored) {

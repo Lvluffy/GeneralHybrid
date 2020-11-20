@@ -16,14 +16,17 @@ public class FileUrlInterceptor implements HybridUrlInterceptor {
 
     @Override
     public boolean urlIntercept(Activity mContext, String url) {
-        if (!TextUtils.isEmpty(url) && (url.endsWith(".docx")
+        if (TextUtils.isEmpty(url)) {
+            return false;
+        }
+        if (url.endsWith(".docx")
                 || url.endsWith(".doc")
                 || url.endsWith(".xls")
                 || url.endsWith(".xlsx")
                 || url.endsWith(".ppt")
                 || url.endsWith(".pptx")
                 || url.endsWith(".pdf")
-                || url.endsWith(".apk"))) {
+                || url.endsWith(".apk")) {
             try {
                 mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
             } catch (Exception ignored) {
