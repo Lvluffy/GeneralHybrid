@@ -35,6 +35,7 @@ import com.luffy.hybrid.webChromeClient.IHybridChromeClient;
 import com.luffy.hybrid.webViewClient.HybridViewClient;
 import com.luffy.hybrid.webViewClient.IHybridViewClient;
 import com.luffy.lifycycle.titlebarlib.TitleBarWidget;
+import com.luffy.lifycycle.titlebarlib.impl.IPresenter;
 import com.luffy.lifycycle.titlebarlib.impl.ITitleClick;
 import com.luffy.lifycycle.titlebarlib.impl.ITitleLayout;
 import com.luffy.lifycycle.titlebarlib.impl.IUIInit;
@@ -49,6 +50,7 @@ import java.util.List;
  * @desc 公用的Webview模板
  */
 public class HybridFragment extends Fragment implements IUIInit<Fragment>,
+        IPresenter,
         ITitleClick,
         ITitleLayout,
         IHybridFlow,
@@ -60,6 +62,9 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
 
     //上下文对象
     public Activity mContext;
+
+    //界面数据
+    public Bundle mBundle;
 
     //界面是否已经附属，默认：false
     protected boolean isAttach;
@@ -100,15 +105,17 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
             /*初始化标题栏事件*/
             TitleBarWidget.getInstance().initTitleEvent(this, inflater);
             /*绑定控件*/
-            this.bindButterKnife(this);
+            bindButterKnife(this);
             /*初始化接收到的数据*/
-            this.initReceiveData();
+            initReceiveData();
             /*初始化标题栏配置*/
             TitleBarWidget.getInstance().initTitlebarConfig(this, getActivity());
             /*界面对用户可见时，初始化界面和数据*/
             if (getUserVisibleHint()) {
                 /*初始化界面*/
-                this.initView();
+                initView();
+                /*初始化Presenter*/
+                initPresenter();
                 /*更改初始化状态*/
                 isInit = true;
             }
@@ -126,6 +133,8 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
         if (isAttach && !isInit && getUserVisibleHint()) {
             /*初始化界面*/
             initView();
+            /*初始化Presenter*/
+            initPresenter();
             /*更改初始化状态*/
             isInit = true;
             return;
@@ -133,6 +142,8 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
         if (isAttach && isInit && getUserVisibleHint()) {
             /*初始化界面*/
             initView();
+            /*初始化Presenter*/
+            initPresenter();
         }
     }
 
@@ -154,11 +165,15 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
 
     @Override
     public void initReceiveData() {
-        if (getArguments().containsKey(EXTRA_TITLE)) {
-            setTitleString(getArguments().getString(EXTRA_TITLE));
+        mBundle = getArguments();
+        if (mBundle == null) {
+            mBundle = new Bundle();
         }
-        if (getArguments().containsKey(EXTRA_URL)) {
-            requestUrl = getArguments().getString(EXTRA_URL);
+        if (mBundle.containsKey(EXTRA_TITLE)) {
+            setTitleString(mBundle.getString(EXTRA_TITLE));
+        }
+        if (mBundle.containsKey(EXTRA_URL)) {
+            requestUrl = mBundle.getString(EXTRA_URL);
         }
     }
 
@@ -171,6 +186,16 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
         handlerShareUrl();
         addInterceptor();
         loadUrl();
+    }
+
+    @Override
+    public void initPresenter() {
+
+    }
+
+    @Override
+    public void detachViewForPresenter() {
+
     }
 
     @Override
@@ -567,4 +592,5 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
     public int setDividerColor() {
         return 0;
     }
+
 }
