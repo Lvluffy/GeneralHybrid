@@ -47,9 +47,5 @@ dependencies {
     /*butterknife*/
     implementation 'com.jakewharton:butterknife:9.0.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0'
-    /*通用视图*/
-    implementation rootProject.generalView.values()
-    /*通用生命周期*/
-    implementation rootProject.generalLifecycle.values()
 }
 

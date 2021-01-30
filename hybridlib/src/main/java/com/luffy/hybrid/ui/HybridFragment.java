@@ -30,16 +30,15 @@ import com.luffy.hybrid.urlIntercept.FileUrlInterceptor;
 import com.luffy.hybrid.urlIntercept.HybridUrlInterceptor;
 import com.luffy.hybrid.urlIntercept.ShortLinkUrlInterceptor;
 import com.luffy.hybrid.urlIntercept.TelUrlInterceptor;
+import com.luffy.hybrid.view.error.HybridErrorView;
+import com.luffy.hybrid.view.titleBar.HybridTitleBarWidget;
+import com.luffy.hybrid.view.titleBar.IHybridTitleClick;
+import com.luffy.hybrid.view.titleBar.IHybridTitleLayout;
+import com.luffy.hybrid.view.titleBar.IHybridUIInit;
 import com.luffy.hybrid.webChromeClient.HybridChromeClient;
 import com.luffy.hybrid.webChromeClient.IHybridChromeClient;
 import com.luffy.hybrid.webViewClient.HybridViewClient;
 import com.luffy.hybrid.webViewClient.IHybridViewClient;
-import com.luffy.lifycycle.titlebarlib.TitleBarWidget;
-import com.luffy.lifycycle.titlebarlib.impl.IPresenter;
-import com.luffy.lifycycle.titlebarlib.impl.ITitleClick;
-import com.luffy.lifycycle.titlebarlib.impl.ITitleLayout;
-import com.luffy.lifycycle.titlebarlib.impl.IUIInit;
-import com.luffy.view.generalemptylib.GeneralEmpty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,10 +48,9 @@ import java.util.List;
  *
  * @desc 公用的Webview模板
  */
-public class HybridFragment extends Fragment implements IUIInit<Fragment>,
-        IPresenter,
-        ITitleClick,
-        ITitleLayout,
+public class HybridFragment extends Fragment implements IHybridUIInit,
+        IHybridTitleClick,
+        IHybridTitleLayout,
         IHybridFlow,
         IHybridViewClient,
         IHybridChromeClient {
@@ -99,23 +97,19 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
             mContext = getActivity();
             /*绑定布局*/
             rootView = inflater.inflate(setRootLayoutView(), null);
-            TitleBarWidget.getInstance().setRootView(rootView);
+            HybridTitleBarWidget.getInstance().setRootView(rootView);
             /*初始化标题栏控件*/
-            TitleBarWidget.getInstance().initTitlebarWidget();
+            HybridTitleBarWidget.getInstance().initTitlebarWidget();
             /*初始化标题栏事件*/
-            TitleBarWidget.getInstance().initTitleEvent(this, inflater);
-            /*绑定控件*/
-            bindButterKnife(this);
+            HybridTitleBarWidget.getInstance().initTitleEvent(this, inflater);
             /*初始化接收到的数据*/
             initReceiveData();
             /*初始化标题栏配置*/
-            TitleBarWidget.getInstance().initTitlebarConfig(this, getActivity());
+            HybridTitleBarWidget.getInstance().initTitlebarConfig(this, getActivity());
             /*界面对用户可见时，初始化界面和数据*/
             if (getUserVisibleHint()) {
                 /*初始化界面*/
                 initView();
-                /*初始化Presenter*/
-                initPresenter();
                 /*更改初始化状态*/
                 isInit = true;
             }
@@ -133,8 +127,6 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
         if (isAttach && !isInit && getUserVisibleHint()) {
             /*初始化界面*/
             initView();
-            /*初始化Presenter*/
-            initPresenter();
             /*更改初始化状态*/
             isInit = true;
             return;
@@ -142,8 +134,6 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
         if (isAttach && isInit && getUserVisibleHint()) {
             /*初始化界面*/
             initView();
-            /*初始化Presenter*/
-            initPresenter();
         }
     }
 
@@ -156,11 +146,6 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
     @Override
     public int setLayoutView() {
         return R.layout.hybrid_layout;
-    }
-
-    @Override
-    public void bindButterKnife(Fragment target) {
-
     }
 
     @Override
@@ -189,18 +174,8 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
     }
 
     @Override
-    public void initPresenter() {
-
-    }
-
-    @Override
-    public void detachViewForPresenter() {
-
-    }
-
-    @Override
     public int setRootLayoutView() {
-        return R.layout.root_layout;
+        return R.layout.hybrid_root_layout;
     }
 
     @Override
@@ -380,16 +355,16 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
     @Override
     public View handlerErrorView(WebResourceError error) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return new GeneralEmpty(mContext)
-                    .setEmptyLayoutGravity(Gravity.CENTER)
-                    .setEmptyImg(R.drawable.general_empty)
-                    .setEmptyTxt(error.getDescription().toString())
-                    .setEmptyTxtColor(R.color.color_999999)
-                    .setEmptyTxtSize(14)
-                    .setEmptyTxtStyle(Typeface.BOLD)
-                    .setEmptyBtnBackground(R.drawable.default_hybrid_btn_selector)
-                    .setEmptyBtnColor(R.color.white)
-                    .setEmptyBtn("刷新重试", new GeneralEmpty.OnClickListener() {
+            return new HybridErrorView(mContext)
+                    .setErrorRootGravity(Gravity.CENTER)
+                    .setErrorImg(R.drawable.default_hybrid_error)
+                    .setErrorTxt(error.getDescription().toString())
+                    .setErrorTxtColor(R.color.color_999999)
+                    .setErrorTxtSize(14)
+                    .setErrorTxtStyle(Typeface.BOLD)
+                    .setErrorBtnBackground(R.drawable.default_hybrid_btn_selector)
+                    .setErrorBtnColor(R.color.white)
+                    .setErrorBtn("刷新重试", new HybridErrorView.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             isError = false;
@@ -452,9 +427,9 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
     @Override
     public void visibilityCloseImg(boolean b) {
         if (b) {
-            TitleBarWidget.getInstance().getNavCloseImg().setVisibility(View.VISIBLE);
+            HybridTitleBarWidget.getInstance().getNavCloseImg().setVisibility(View.VISIBLE);
         } else {
-            TitleBarWidget.getInstance().getNavCloseImg().setVisibility(View.GONE);
+            HybridTitleBarWidget.getInstance().getNavCloseImg().setVisibility(View.GONE);
         }
     }
 
@@ -515,7 +490,7 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
 
     @Override
     public void setBackTextString(String backStr) {
-        TitleBarWidget.getInstance().getNavBackTxt().setText(backStr);
+        HybridTitleBarWidget.getInstance().getNavBackTxt().setText(backStr);
     }
 
     @Override
@@ -540,7 +515,7 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
 
     @Override
     public void setTitleString(String titleStr) {
-        TitleBarWidget.getInstance().getNavTitle().setText(titleStr);
+        HybridTitleBarWidget.getInstance().getNavTitle().setText(titleStr);
     }
 
     @Override
@@ -575,7 +550,7 @@ public class HybridFragment extends Fragment implements IUIInit<Fragment>,
 
     @Override
     public void setMoreTextString(String moreStr) {
-        TitleBarWidget.getInstance().getNavMoreTxt().setText(moreStr);
+        HybridTitleBarWidget.getInstance().getNavMoreTxt().setText(moreStr);
     }
 
     @Override
